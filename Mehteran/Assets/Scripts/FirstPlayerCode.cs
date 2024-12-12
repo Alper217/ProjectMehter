@@ -1,5 +1,8 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using System.Threading;
+using UnityEngine.SceneManagement; // TextMeshPro namespace'ini ekleyin
 
 public class FirstPlayerCode : MonoBehaviour
 {
@@ -8,7 +11,7 @@ public class FirstPlayerCode : MonoBehaviour
     public Material adjacentMaterial;
     public Material enemyAdjacentMaterial;
     public Material selectedMaterial;
-    public Material sideTwoHexMaterial; // MAV� B�LGE ALANI
+    public Material sideTwoHexMaterial; // MAVÝ BÖLGE ALANI
     // HEX ALANI
     private GameObject currentHex;
     private List<GameObject> adjacentHexes = new List<GameObject>();
@@ -18,9 +21,13 @@ public class FirstPlayerCode : MonoBehaviour
     private bool isSelected = false;
     public bool isMoved = false;
     SecondPlayerCode secondPlayerCode;
+
+    // FirstPlayerWin metnini referans olarak ekleyin
+    public TextMeshProUGUI firstPlayerWinText;
+
     void Start()
     {
-        UpdateCurrentHex(); //HEX G�NCELLEME
+        UpdateCurrentHex(); //HEX GÜNCELLEME
     }
 
     void Update()
@@ -31,7 +38,7 @@ public class FirstPlayerCode : MonoBehaviour
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 if (hit.collider.gameObject == playerObject)
-                {                                                       //KARAKTER�N �LERLET�LMES� VE B�LGE KONTROL�
+                {                                                       //KARAKTERÝN ÝLERLETÝLMESÝ VE BÖLGE KONTROLÜ
                     ToggleSelection();
                 }
                 else if (isSelected && hit.collider.CompareTag("HexTile") && adjacentHexes.Contains(hit.collider.gameObject))
@@ -41,6 +48,10 @@ public class FirstPlayerCode : MonoBehaviour
                 else if (isSelected && hit.collider.CompareTag("HexTileEnemy") && enemyHexes.Contains(hit.collider.gameObject))
                 {
                     CaptureEnemyTile(hit.collider.gameObject);
+                }
+                else if (isSelected && hit.collider.CompareTag("EnemyCastle"))
+                {
+                    CaptureEnemyCastle(hit.collider.gameObject); // "EnemyCastle" kontrolü ekleyin
                 }
             }
         }
@@ -90,27 +101,51 @@ public class FirstPlayerCode : MonoBehaviour
         }
         Debug.Log("Oyuncu Bir birim ilerledi");
         isMoved = true;
-        //secondPlayerCode.isMoved = false;
         UpdateCurrentHex();
     }
 
     void CaptureEnemyTile(GameObject enemyTile)
     {
-        // Karakteri i�gal edilen alana ta��
+        // Karakteri iþgal edilen alana taþý
         MoveToTileCenter(enemyTile);
 
-        // ��gal edilen alan�n rengini maviye �evir ve etiketini HexTile olarak de�i�tir
+        // Ýþgal edilen alanýn rengini maviye çevir ve etiketini HexTile olarak deðiþtir
         Renderer renderer = enemyTile.GetComponent<Renderer>();
         if (renderer != null)
         {
-            renderer.material = sideTwoHexMaterial; // HexTile i�in varsay�lan mavi materyale ayarla
-            enemyTile.tag = "HexTile"; // HexTileEnemy'den HexTile'a ge�i� yap
+            renderer.material = sideTwoHexMaterial; // HexTile için varsayýlan mavi materyale ayarla
+            enemyTile.tag = "HexTile"; // HexTileEnemy'den HexTile'a geçiþ yap
         }
-        Debug.Log("Oyuncu D��man b�lgesi ele ge�irdi");
+        Debug.Log("Oyuncu Düþman bölgesi ele geçirdi");
         soldierCount -= 1;
-        Debug.Log($"�kinci oyuncunun asker say�s� {soldierCount}");
-        ClearPreviousHighlights(); // Kom�u alanlar� temizle
-        UpdateCurrentHex(); // Yeni konumu g�ncelle
+        Debug.Log($"Ýkinci oyuncunun asker sayýsý {soldierCount}");
+        ClearPreviousHighlights(); // Komþu alanlarý temizle
+        UpdateCurrentHex(); // Yeni konumu güncelle
+    }
+
+    void CaptureEnemyCastle(GameObject enemyCastle)
+    {
+        // Karakteri düşman kalesine taşı
+        MoveToTileCenter(enemyCastle);
+
+        // Düşman kalesi ele geçirildiğinde "FirstPlayerWin" textini aktif hale getir
+        
+            firstPlayerWinText.enabled = true; // Texti aktif et
+        
+
+        // Düşman kalesinin rengini değiştirin veya başka bir işlem ekleyebilirsiniz
+        Renderer renderer = enemyCastle.GetComponent<Renderer>();
+        if (renderer != null)
+        {
+            renderer.material = sideTwoHexMaterial; // Düşman kalesinin rengini değiştir
+        }
+
+        enemyCastle.tag = "HexTile"; // Düşman kalesinin etiketini güncelle
+        Debug.Log("Oyuncu Düşman Kalesini Ele Geçirdi");
+        Debug.Log("Oyunu Birinci Oyuncu Kazandı!!");
+        Debug.Log("Oyun Yeniden Başlatılacak....");
+        ClearPreviousHighlights(); // Komşu alanları temizle
+        UpdateCurrentHex(); // Yeni konumu güncelle
     }
 
     void UpdateCurrentHex()
@@ -151,7 +186,6 @@ public class FirstPlayerCode : MonoBehaviour
                     }
                     renderer.material = enemyAdjacentMaterial;
                     enemyHexes.Add(col.gameObject);
-
                 }
             }
         }
