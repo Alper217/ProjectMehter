@@ -1,31 +1,31 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class CardHighlighter : MonoBehaviour
 {
-    private Renderer cardRenderer; // Kartýn Renderer'ýný kontrol etmek için.
-    private Color originalColor;   // Kartýn orijinal rengi.
-    private static CardHighlighter selectedCard; // Týklanan kartý takip etmek için.
+    private Renderer cardRenderer; // Kartï¿½n Renderer'ï¿½nï¿½ kontrol etmek iï¿½in.
+    private Color originalColor;   // Kartï¿½n orijinal rengi.
+    public static CardHighlighter selectedCard; // Tï¿½klanan kartï¿½ takip etmek iï¿½in.
 
     private void Start()
     {
         cardRenderer = GetComponent<Renderer>();
         if (cardRenderer != null)
         {
-            originalColor = cardRenderer.material.color; // Kartýn ilk rengini kaydet.
+            originalColor = cardRenderer.material.color; // Kartï¿½n ilk rengini kaydet.
         }
     }
 
     private void OnMouseEnter()
     {
-        if (selectedCard != this) // Eðer bu kart seçili deðilse hover efekti uygula.
+        if (selectedCard != this) // Eï¿½er bu kart seï¿½ili deï¿½ilse hover efekti uygula.
         {
-            SetCardColor(new Color(1f, 1f, 0f, 0.5f)); // Sarý renk (hover).
+            SetCardColor(new Color(1f, 1f, 0f, 0.5f)); // Sarï¿½ renk (hover).
         }
     }
 
     private void OnMouseExit()
     {
-        if (selectedCard != this) // Eðer bu kart seçili deðilse normal rengi geri al.
+        if (selectedCard != this) // Eï¿½er bu kart seï¿½ili deï¿½ilse normal rengi geri al.
         {
             ResetCardColor();
         }
@@ -35,11 +35,11 @@ public class CardHighlighter : MonoBehaviour
     {
         if (selectedCard != null && selectedCard != this)
         {
-            selectedCard.ResetCardColor(); // Önceki seçili kartýn rengini sýfýrla.
+            selectedCard.ResetCardColor(); // ï¿½nceki seï¿½ili kartï¿½n rengini sï¿½fï¿½rla.
         }
 
-        selectedCard = this; // Bu kartý seçili yap.
-        SetCardColor(new Color(1f, 0f, 0f, 0.5f)); // Kýrmýzý renk (seçili).
+        selectedCard = this; // Bu kartï¿½ seï¿½ili yap.
+        SetCardColor(new Color(1f, 0f, 0f, 0.5f)); // Kï¿½rmï¿½zï¿½ renk (seï¿½ili).
     }
 
     private void SetCardColor(Color color)

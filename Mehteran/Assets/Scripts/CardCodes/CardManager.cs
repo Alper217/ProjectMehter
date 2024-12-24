@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 public class CardManager : MonoBehaviour
@@ -7,88 +6,132 @@ public class CardManager : MonoBehaviour
     public Transform stackPosition;  // Deste pozisyonu
     public Transform handPosition;   // El pozisyonu
     public Transform opponentPosition; // Rakip pozisyonu
-    public Transform targetPosition; // Boş kısım
+    public Transform targetPosition; // Hedef pozisyon
     public GameObject cardPrefab;
 
-    public int cardCount = 21;       // Başlangıç kart sayısı 
-    public float stackOffset = 0.1f; // Deste kart aralığı
-    public float handSpacing = 1.5f; // Eldeki kartlar arasındaki mesafe
+    public int cardCount = 21;        // BaÅŸlangÄ±Ã§ kart sayÄ±sÄ± 
+    public float stackOffset = 0.1f; // Deste kart aralÄ±ÄŸÄ±
+    public float handSpacing = 15f;  // Eldeki kartlar arasÄ±ndaki mesafe
 
-    private Stack<GameObject> cardStack = new Stack<GameObject>(); // Kart yığını
+    private Stack<GameObject> cardStack = new Stack<GameObject>(); // Kart yÄ±ÄŸÄ±nÄ±
     private List<GameObject> handCards = new List<GameObject>();  // Eldeki kartlar
+    private List<GameObject> opponentCards = new List<GameObject>(); // Rakibin kartlarÄ±
+    private GameObject selectedCard = null; // KullanÄ±cÄ± tarafÄ±ndan seÃ§ilen kart
 
-    private Dictionary<System.Type, int> scriptCounters = new Dictionary<System.Type, int>();
+    private int drawLimit = 3; // Oyuncunun toplam Ã§ekebileceÄŸi kart sayÄ±sÄ±
+    private bool hasGivenCardToOpponent = false; // Rakibe kart verilip verilmediÄŸini kontrol eder
+    private bool hasPlayedCardToTarget = false; // Hedefe kart oynanÄ±p oynanmadÄ±ÄŸÄ±nÄ± kontrol eder
 
-    private GameObject selectedCard = null;
-
-    void Start()
+    private void Start()
     {
         CreateCardStack();
+        Debug.Log("Oyun baÅŸladÄ±. Kart Ã§ekmek iÃ§in karta tÄ±klayÄ±n.");
     }
 
-    void CreateCardStack()
+    private void CreateCardStack()
     {
         for (int i = 0; i < cardCount; i++)
         {
-            // Yeni kart oluştur
             GameObject newCard = Instantiate(cardPrefab, stackPosition.position + Vector3.up * (i * stackOffset), Quaternion.identity);
             newCard.name = "Card " + (i + 1);
 
-            // Kartı deste yığınına ekle
             Card cardComponent = newCard.AddComponent<Card>();
             cardComponent.SetManager(this);
             cardStack.Push(newCard);
+
+            BoxCollider collider = newCard.AddComponent<BoxCollider>();
+            collider.size = new Vector3(1, 1, 1);
         }
     }
+
+    public bool IsInHand(GameObject card)
+    {
+        return handCards.Contains(card);
+    }
+
     public void MoveCardToHand(GameObject card)
     {
-        if (handCards.Count >= 3)
-        {
-            Debug.Log("Eldeki kart sayısı en fazla 3 olabilir!");
-            return;
-        }
-
-        if (cardStack.Contains(card))
+        if (cardStack.Contains(card) && handCards.Count < drawLimit && !hasGivenCardToOpponent && !hasPlayedCardToTarget)
         {
             cardStack.Pop();
-            handCards.Add(card); // Kartı el listesine ekle
-            ArrangeHandCards();  // Eldeki kartları düzenle
+            handCards.Add(card);
+            ArrangeHandCards();
+            Debug.Log($"Kart eline taÅŸÄ±ndÄ±: {card.name}");
+        }
+        else if (handCards.Count >= drawLimit)
+        {
+            Debug.Log("3'ten fazla kart Ã§ekemezsin!");
+        }
+        else if (hasGivenCardToOpponent || hasPlayedCardToTarget)
+        {
+            Debug.Log("Kart verildikten veya oynandÄ±ktan sonra yeni kart Ã§ekemezsin!");
+        }
+        else
+        {
+            Debug.Log("Bu kart destede deÄŸil!");
         }
     }
 
-    void ArrangeHandCards()
+    public void SelectCard(GameObject card)
     {
-        for (int i = 0; i < handCards.Count; i++)
+        if (handCards.Contains(card))
         {
-            Vector3 targetPosition = handPosition.position + Vector3.right * (i * handSpacing);
-            Quaternion targetRotation = Quaternion.Euler(0, 90f, 45f);
-
-            handCards[i].transform.position = targetPosition;
-            handCards[i].transform.rotation = targetRotation;
+            selectedCard = card;
+            Debug.Log($"Kart seÃ§ildi: {card.name}");
         }
-    }
-    public void MoveCardToTarget()
-    {
-        
-        if (selectedCard != null)  // Eğer bir kart seçildiyse
+        else
         {
-            selectedCard.transform.position = targetPosition.position; // Seçilen kartı hedef pozisyona taşı
-            selectedCard = null;  // Kartı taşıdıktan sonra seçimi sıfırla
+            Debug.Log("Bu kart elde deÄŸil!");
         }
-        else Debug.Log("Kart Seçilmedi!");
     }
 
     public void GiveCardToOpponent()
     {
-        if (selectedCard != null)  // Eğer bir kart seçildiyse
+        if (selectedCard != null && handCards.Contains(selectedCard) && !hasGivenCardToOpponent)
         {
-            selectedCard.transform.position = opponentPosition.position; // Kartı rakip pozisyonuna taşı
-            selectedCard = null;  // Kartı taşıdıktan sonra seçimi sıfırla
+            selectedCard.transform.position = opponentPosition.position + Vector3.right * (opponentCards.Count * handSpacing); // KartÄ± rakip pozisyonuna taÅŸÄ±
+            handCards.Remove(selectedCard); // KartÄ± elden Ã§Ä±kar
+            opponentCards.Add(selectedCard); // Rakibin kartlarÄ±na ekle
+            selectedCard = null; // SeÃ§imi sÄ±fÄ±rla
+            hasGivenCardToOpponent = true; // KartÄ±n verildiÄŸini iÅŸaretle
+            Debug.Log("Kart rakibe verildi.");
+        }
+        else if (hasGivenCardToOpponent)
+        {
+            Debug.Log("Zaten bir kart verdin!");
+        }
+        else
+        {
+            Debug.Log("Rakibe verilecek bir kart seÃ§ilmedi veya elde deÄŸil!");
         }
     }
 
-    public void UseCard(GameObject card)
+    public void MoveToTarget()
     {
-        // Kullan butonuna atanacak metodun içeriği burada doldurulabilir
+        if (selectedCard != null && handCards.Contains(selectedCard) && !hasPlayedCardToTarget)
+        {
+            selectedCard.transform.position = targetPosition.position; // KartÄ± hedef pozisyona taÅŸÄ±
+            handCards.Remove(selectedCard); // El listesinden Ã§Ä±kar
+            selectedCard = null; // SeÃ§imi sÄ±fÄ±rla
+            hasPlayedCardToTarget = true; // KartÄ±n oynandÄ±ÄŸÄ±nÄ± iÅŸaretle
+            Debug.Log("SeÃ§ilen kart hedefe taÅŸÄ±ndÄ±.");
+        }
+        else if (hasPlayedCardToTarget)
+        {
+            Debug.Log("Zaten bir kart oynadÄ±n!");
+        }
+        else
+        {
+            Debug.Log("Hedefe taÅŸÄ±nacak kart seÃ§ilmedi veya elde deÄŸil!");
+        }
+    }
+
+    private void ArrangeHandCards()
+    {
+        for (int i = 0; i < handCards.Count; i++)
+        {
+            Vector3 targetPosition = handPosition.position + Vector3.right * (i * handSpacing);
+            handCards[i].transform.position = targetPosition;
+        }
     }
 }

@@ -9,11 +9,24 @@ public class Card : MonoBehaviour
         manager = cardManager;
     }
 
-    void OnMouseDown()
+    private void OnMouseDown()
     {
         if (manager != null)
         {
-            manager.MoveCardToHand(gameObject); 
+            if (manager.IsInHand(gameObject))
+            {
+                // Eðer kart eldeyse seçmek için kullanýlacak.
+                manager.SelectCard(gameObject);
+            }
+            else
+            {
+                // Eðer kart destedeyse ele taþýr.
+                manager.MoveCardToHand(gameObject);
+            }
+        }
+        else
+        {
+            Debug.LogError("CardManager atanmadý!");
         }
     }
 }
