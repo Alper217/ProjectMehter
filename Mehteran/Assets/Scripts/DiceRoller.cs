@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class DiceRoller : MonoBehaviour
 {
-    public Rigidbody diceRigidbody; 
-    public float forceMultiplier = 30f; 
-    public float torqueMultiplier = 30f; 
+    public Rigidbody diceRigidbody;
+    public float forceMultiplier = 30f;
+    public float torqueMultiplier = 30f;
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) 
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             RollDice();
         }
@@ -35,5 +35,4 @@ public class DiceRoller : MonoBehaviour
         diceRigidbody.AddForce(randomForce, ForceMode.Impulse);
         diceRigidbody.AddTorque(randomTorque, ForceMode.Impulse);
     }
-
 }
