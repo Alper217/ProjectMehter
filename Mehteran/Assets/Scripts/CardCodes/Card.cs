@@ -1,10 +1,10 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class Card : MonoBehaviour
 {
-    private CardManagerOne manager;
+    private CardManager manager;
 
-    public void SetManager(CardManagerOne cardManager)
+    public void SetManager(CardManager cardManager)
     {
         manager = cardManager;
     }
@@ -15,18 +15,18 @@ public class Card : MonoBehaviour
         {
             if (manager.IsInHand(gameObject))
             {
-                // Eğer kart eldeyse seçmek için kullanılacak.
+                // Elde olan bir kartÄ± seÃ§
                 manager.SelectCard(gameObject);
             }
             else
             {
-                // Eğer kart destedeyse ele taşır.
+                // Destede olan bir kartÄ± ele taÅŸÄ±
                 manager.MoveCardToHand(gameObject);
             }
         }
         else
         {
-            Debug.LogError("CardManager atanmadı!");
+            Debug.LogError("CardManager atanmadÄ±!");
         }
     }
 }

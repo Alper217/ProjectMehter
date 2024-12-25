@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
-    CardManagerOne cardManagerOne;
+    CardManager cardManagerOne;
     public SecondPlayerCode secondPlayer;
 
     void Start()
@@ -15,7 +15,7 @@ public class TurnManager : MonoBehaviour
 
     void Update()
     {
-        if (cardManagerOne.IsThrowed == true && cardManagerOne.IsAbondoned == true)
+        //if (cardManagerOne.IsThrowed == true && cardManagerOne.IsAbondoned == true)
         {
             //secondPlayer.
         }
