@@ -363,7 +363,7 @@
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2022.3.20f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 "Assets/Scripts/CardCodes/Card.cs"
 "Assets/Scripts/CardCodes/CardHighlLighter.cs"
-"Assets/Scripts/CardCodes/CardManager.cs"
+"Assets/Scripts/CardCodes/CardManagerOne.cs"
 "Assets/Scripts/DiceRoller.cs"
 "Assets/Scripts/DragObject.cs"
 "Assets/Scripts/EnemyCheck.cs"

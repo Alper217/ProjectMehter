@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class CardManager : MonoBehaviour
+public class CardManagerOne : MonoBehaviour
 {
     public Transform stackPosition;  // Deste pozisyonu
     public Transform handPosition;   // El pozisyonu
@@ -22,6 +22,8 @@ public class CardManager : MonoBehaviour
     private bool hasGivenCardToOpponent = false; // Rakibe kart verilip verilmediğini kontrol eder
     private bool hasPlayedCardToTarget = false; // Hedefe kart oynanıp oynanmadığını kontrol eder
 
+    public bool IsAbondoned = false;
+    public bool IsThrowed = false;
     private void Start()
     {
         CreateCardStack();
@@ -104,6 +106,7 @@ public class CardManager : MonoBehaviour
         {
             Debug.Log("Rakibe verilecek bir kart seçilmedi veya elde değil!");
         }
+        IsAbondoned = true;
     }
 
     public void MoveToTarget()
@@ -124,6 +127,7 @@ public class CardManager : MonoBehaviour
         {
             Debug.Log("Hedefe taşınacak kart seçilmedi veya elde değil!");
         }
+        IsThrowed = true;
     }
 
     private void ArrangeHandCards()

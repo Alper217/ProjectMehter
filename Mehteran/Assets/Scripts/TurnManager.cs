@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
-    public FirstPlayerCode firstPlayer;
+    CardManagerOne cardManagerOne;
     public SecondPlayerCode secondPlayer;
 
     void Start()
@@ -15,18 +15,22 @@ public class TurnManager : MonoBehaviour
 
     void Update()
     {
-        if (firstPlayer.isMoved)
+        if (cardManagerOne.IsThrowed == true && cardManagerOne.IsAbondoned == true)
         {
-            secondPlayer.enabled = true;
-            secondPlayer.isMoved = false;
-            firstPlayer.enabled = false;
-            firstPlayer.isMoved = false; 
+            //secondPlayer.
         }
-        else if (secondPlayer.isMoved)
-        {
-            firstPlayer.enabled = true;
-            firstPlayer.isMoved = false;
-            secondPlayer.enabled = false;
-        }
+        //if (firstPlayer.isMoved)
+        //{
+        //    secondPlayer.enabled = true;
+        //    secondPlayer.isMoved = false;
+        //    firstPlayer.enabled = false;
+        //    firstPlayer.isMoved = false; 
+        //}
+        //else if (secondPlayer.isMoved)
+        //{
+        //    firstPlayer.enabled = true;
+        //    firstPlayer.isMoved = false;
+        //    secondPlayer.enabled = false;
+        //}
     }
 }

@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class Card : MonoBehaviour
 {
-    private CardManager manager;
+    private CardManagerOne manager;
 
-    public void SetManager(CardManager cardManager)
+    public void SetManager(CardManagerOne cardManager)
     {
         manager = cardManager;
     }
