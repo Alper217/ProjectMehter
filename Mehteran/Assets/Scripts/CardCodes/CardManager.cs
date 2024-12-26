@@ -39,7 +39,13 @@ public class CardManager : MonoBehaviour
     {
         for (int i = 0; i < cardCount; i++)
         {
-            GameObject newCard = Instantiate(cardPrefab, stackPosition.position + Vector3.up * (i * stackOffset), Quaternion.identity);
+            // Her üç karttan sonra ek bir boşluk bırak
+            float extraSpacing = (i / 3) * .5f;
+
+            // Kartın pozisyonunu hesapla
+            Vector3 cardPosition = stackPosition.position + Vector3.up * (i * stackOffset + extraSpacing);
+
+            GameObject newCard = Instantiate(cardPrefab, cardPosition, Quaternion.identity);
             newCard.name = $"{gameObject.name} Card {i + 1}";
 
             Card cardComponent = newCard.AddComponent<Card>();

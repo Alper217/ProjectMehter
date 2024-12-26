@@ -1,26 +1,26 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public List<CardManager> players; // Oyuncularýn listesi.
-    private int currentPlayerIndex = 0; // Þu anki oyuncunun sýrasý.
+    public List<CardManager> players; // Oyuncularï¿½n listesi.
+    private int currentPlayerIndex = 0; // ï¿½u anki oyuncunun sï¿½rasï¿½.
 
     private void Start()
     {
-        StartTurn(); // Ýlk oyuncunun sýrasýný baþlat.
+        StartTurn(); // ï¿½lk oyuncunun sï¿½rasï¿½nï¿½ baï¿½lat.
     }
 
     public void EndTurn()
     {
-        players[currentPlayerIndex].EndPlayerTurn(); // Aktif oyuncunun sýrasýný bitir.
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.Count; // Sýradaki oyuncuya geç.
-        StartTurn(); // Yeni oyuncunun sýrasýný baþlat.
+        players[currentPlayerIndex].EndPlayerTurn(); // Aktif oyuncunun sï¿½rasï¿½nï¿½ bitir.
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.Count; // Sï¿½radaki oyuncuya geï¿½.
+        StartTurn(); // Yeni oyuncunun sï¿½rasï¿½nï¿½ baï¿½lat.
     }
 
     private void StartTurn()
     {
         players[currentPlayerIndex].StartPlayerTurn();
-        Debug.Log($"Sýra Oyuncu {currentPlayerIndex + 1}'de!");
+        Debug.Log($"Sï¿½ra Oyuncu {currentPlayerIndex + 1}'de!");
     }
 }
