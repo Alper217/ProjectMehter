@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class CardManager : MonoBehaviour
 {
+    [SerializeField] private string playerTag = "FirstPlayerCard"; // Oyuncu kartı tag'i, Inspector üzerinden ayarlanabilir
+    [SerializeField] private string opponentTag = "SecondPlayerCard"; // Rakip kartı tag'i, Inspector üzerinden ayarlanabilir
+
     public Transform stackPosition;  // Deste pozisyonu
     public Transform handPosition;   // El pozisyonu
     public Transform opponentPosition; // Rakip pozisyonu
@@ -26,9 +29,8 @@ public class CardManager : MonoBehaviour
     public bool IsThrowed = false;
 
     public bool IsMyTurn { get; private set; } // Oyuncunun sırası olup olmadığını kontrol eder
-
     public GameManager gameManager; // GameManager referansı
-
+    private int currentDrawCount = 0; // Oyuncunun bu turda çektiği kart sayısı
     private void Start()
     {
         CreateCardStack();
@@ -39,14 +41,15 @@ public class CardManager : MonoBehaviour
     {
         for (int i = 0; i < cardCount; i++)
         {
-            // Her üç karttan sonra ek bir boşluk bırak
             float extraSpacing = (i / 3) * .5f;
-
             // Kartın pozisyonunu hesapla
             Vector3 cardPosition = stackPosition.position + Vector3.up * (i * stackOffset + extraSpacing);
 
             GameObject newCard = Instantiate(cardPrefab, cardPosition, Quaternion.identity);
             newCard.name = $"{gameObject.name} Card {i + 1}";
+
+            // Kart tag'ini ayarla
+            newCard.tag = playerTag; // Kartlara oyuncu tag'ini ekle
 
             Card cardComponent = newCard.AddComponent<Card>();
             cardComponent.SetManager(this);
@@ -57,6 +60,7 @@ public class CardManager : MonoBehaviour
         }
     }
 
+
     public bool IsInHand(GameObject card)
     {
         return handCards.Contains(card);
@@ -64,14 +68,15 @@ public class CardManager : MonoBehaviour
 
     public void MoveCardToHand(GameObject card)
     {
-        if (IsMyTurn && cardStack.Contains(card) && handCards.Count < drawLimit && !hasGivenCardToOpponent && !hasPlayedCardToTarget)
+        if (IsMyTurn && cardStack.Contains(card) && currentDrawCount < drawLimit)
         {
             cardStack.Pop();
             handCards.Add(card);
-            ArrangeHandCards();
+            currentDrawCount++;
+            ArrangeHandCards(); // Eldeki kartları düzenle
             Debug.Log($"{gameObject.name}: Kart eline taşındı: {card.name}");
         }
-        else if (handCards.Count >= drawLimit)
+        else if (currentDrawCount >= drawLimit)
         {
             Debug.Log($"{gameObject.name}: 3'ten fazla kart çekemezsin!");
         }
@@ -106,17 +111,16 @@ public class CardManager : MonoBehaviour
     {
         if (IsMyTurn && selectedCard != null && handCards.Contains(selectedCard) && !hasGivenCardToOpponent)
         {
+            // Rakibe kart verirken, kartın tag'ini rakip tag'ine ayarla
+            selectedCard.tag = opponentTag;  // Rakip kartına özel tag ekle
             selectedCard.transform.position = opponentPosition.position + Vector3.right * (opponentCards.Count * handSpacing);
+
             handCards.Remove(selectedCard);
             opponentCards.Add(selectedCard);
             selectedCard = null;
             hasGivenCardToOpponent = true;
-            Debug.Log($"{gameObject.name}: Kart rakibe verildi.");
 
-            if (hasPlayedCardToTarget)
-            {
-                gameManager.EndTurn(); // Sıra geçişini bildir
-            }
+            Debug.Log($"{gameObject.name}: Kart rakibe verildi.");
         }
         else if (!IsMyTurn)
         {
@@ -126,7 +130,6 @@ public class CardManager : MonoBehaviour
         {
             Debug.Log($"{gameObject.name}: Rakibe verilecek bir kart seçilmedi veya elde değil!");
         }
-        IsAbondoned = true;
     }
 
     public void MoveToTarget()
@@ -137,6 +140,7 @@ public class CardManager : MonoBehaviour
             handCards.Remove(selectedCard);
             selectedCard = null;
             hasPlayedCardToTarget = true;
+            ArrangeHandCards(); // Eldeki kartları düzenle
             Debug.Log($"{gameObject.name}: Seçilen kart hedefe taşındı.");
 
             if (hasGivenCardToOpponent)
@@ -157,15 +161,19 @@ public class CardManager : MonoBehaviour
 
     private void ArrangeHandCards()
     {
+        float totalWidth = (handCards.Count - 1) * handSpacing; // Kartların toplam genişliği
+        Vector3 startPosition = handPosition.position - Vector3.right * (totalWidth / 2); // Ortadan başla
+
         for (int i = 0; i < handCards.Count; i++)
         {
-            Vector3 targetPosition = handPosition.position + Vector3.right * (i * handSpacing);
+            Vector3 targetPosition = startPosition + Vector3.right * (i * handSpacing);
             handCards[i].transform.position = targetPosition;
         }
     }
 
     public void StartPlayerTurn()
     {
+        currentDrawCount = 0; // Yeni turda çekilen kart sayısını sıfırla
         IsMyTurn = true;
         hasGivenCardToOpponent = false;
         hasPlayedCardToTarget = false;

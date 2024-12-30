@@ -90,20 +90,20 @@ public class HorseManMovementOne : MonoBehaviour
 
         // Ýleri sað çapraz (2 birim)
         Vector3 forwardRightPos = currentPos +
-                                  (playerObject.transform.forward * 9f) +
-                                  (playerObject.transform.right * 9f);
+                                  (playerObject.transform.forward * 6f) +
+                                  (playerObject.transform.right * 12f);
         HighlightTileAtPosition(forwardRightPos);
 
         // Ýleri sol çapraz (2 birim)
         Vector3 forwardLeftPos = currentPos +
-                                 (playerObject.transform.forward * 9f) -
-                                 (playerObject.transform.right * 9f);
+                                 (playerObject.transform.forward * 6f) -
+                                 (playerObject.transform.right * 12f);
         HighlightTileAtPosition(forwardLeftPos);
     }
 
     void HighlightTileAtPosition(Vector3 position)
     {
-        Collider[] colliders = Physics.OverlapSphere(position, 3.35f);
+        Collider[] colliders = Physics.OverlapSphere(position, 4.6f);
         foreach (var collider in colliders)
         {
             if (collider.gameObject == currentHex)
