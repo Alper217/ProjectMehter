@@ -66,7 +66,7 @@ public class ShahMovement : MonoBehaviour
     void MoveToTileCenter(GameObject targetTile)
     {
         Vector3 newPosition = targetTile.transform.position;
-        newPosition.y += 4.5f; 
+        newPosition.y += 4.5f;
         playerObject.transform.position = newPosition;
 
         ClearPreviousHighlights();
@@ -93,7 +93,7 @@ public class ShahMovement : MonoBehaviour
     {
         if (currentHex == null) return;
 
-        Collider[] adjacentColliders = Physics.OverlapSphere(currentHex.transform.position, 10f);
+        Collider[] adjacentColliders = Physics.OverlapSphere(currentHex.transform.position,50f);
         foreach (var col in adjacentColliders)
         {
             if (col.gameObject == currentHex) continue;

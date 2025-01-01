@@ -61,7 +61,7 @@ public class InfantryMovementOne : MonoBehaviour
     void MoveToTile(GameObject targetTile)
     {
         Vector3 newPosition = targetTile.transform.position;
-        newPosition.y += 4.5f; // Karakterin yüksekliðini ayarlamak için
+        newPosition.y += 2f; // Karakterin yüksekliðini ayarlamak için
         playerObject.transform.position = newPosition;
 
         ClearHighlights();
@@ -83,17 +83,17 @@ public class InfantryMovementOne : MonoBehaviour
         // Ýleri yönde (sadece düz, sað-sol deðil)
         for (int i = 1; i <= 3; i++)
         {
-            Vector3 forwardPos = currentPos + (playerObject.transform.forward * i * 5f); // Hex mesafesine göre ölçek
+            Vector3 forwardPos = currentPos + (playerObject.transform.forward * i * 6f); // Hex mesafesine göre ölçek
             HighlightTileAtPosition(forwardPos);
         }
         // Geri yönde (sadece düz, sað-sol deðil)
-        Vector3 backwardPos = currentPos - (playerObject.transform.forward * 5f); // Hex mesafesi geriye
+        Vector3 backwardPos = currentPos - (playerObject.transform.forward * 10f); // Hex mesafesi geriye
         HighlightTileAtPosition(backwardPos);
     }
 
     void HighlightTileAtPosition(Vector3 position)
     {
-        Collider[] colliders = Physics.OverlapSphere(position, 3f); // Alan geniþliði artýrýldý
+        Collider[] colliders = Physics.OverlapSphere(position, 1f); // Alan geniþliði artýrýldý
         foreach (var collider in colliders)
         {
             // Eðer hedef pozisyon, oyuncunun mevcut bloðuna denk geliyorsa atla

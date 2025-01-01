@@ -61,7 +61,7 @@ public class HorseManMovementOne : MonoBehaviour
     void MoveToTile(GameObject targetTile)
     {
         Vector3 newPosition = targetTile.transform.position;
-        newPosition.y += 4.5f; // Karakterin yüksekliðini ayarlamak için
+        newPosition.y += 6.5f; // Karakterin yüksekliðini ayarlamak için
         playerObject.transform.position = newPosition;
 
         ClearHighlights();
@@ -91,7 +91,7 @@ public class HorseManMovementOne : MonoBehaviour
         // Ýleri sað çapraz (2 birim)
         Vector3 forwardRightPos = currentPos +
                                   (playerObject.transform.forward * 6f) +
-                                  (playerObject.transform.right * 12f);
+                                  (playerObject.transform.right * 11f);
         HighlightTileAtPosition(forwardRightPos);
 
         // Ýleri sol çapraz (2 birim)

@@ -61,7 +61,7 @@ public class ArcherMovementTwo : MonoBehaviour
     void MoveToTile(GameObject targetTile)
     {
         Vector3 newPosition = targetTile.transform.position;
-        newPosition.y += 4.5f; // Karakterin yüksekliðini ayarlamak için
+        newPosition.y += 2f; // Karakterin yüksekliðini ayarlamak için
         playerObject.transform.position = newPosition;
 
         ClearHighlights();
@@ -85,7 +85,7 @@ public class ArcherMovementTwo : MonoBehaviour
         Vector3 currentPos = playerObject.transform.position;
 
         // Geri yönde 1 birim (düz)
-        Vector3 backwardPos = currentPos - (playerObject.transform.forward * 5f);
+        Vector3 backwardPos = currentPos - (playerObject.transform.forward * 20f);
         HighlightTileAtPosition(backwardPos);
 
         // Ýleri sað çapraz (2 birim)

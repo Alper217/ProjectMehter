@@ -31,6 +31,7 @@ public class CardManager : MonoBehaviour
     public bool IsMyTurn { get; private set; } // Oyuncunun sırası olup olmadığını kontrol eder
     public GameManager gameManager; // GameManager referansı
     private int currentDrawCount = 0; // Oyuncunun bu turda çektiği kart sayısı
+    public MonoBehaviour[] cardScripts;
     private void Start()
     {
         CreateCardStack();

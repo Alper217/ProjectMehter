@@ -61,7 +61,7 @@ public class HorseManMovementTwo : MonoBehaviour
     void MoveToTile(GameObject targetTile)
     {
         Vector3 newPosition = targetTile.transform.position;
-        newPosition.y += 4.5f; // Karakterin yüksekliðini ayarlamak için
+        newPosition.y += 6.5f; // Karakterin yüksekliðini ayarlamak için
         playerObject.transform.position = newPosition;
 
         ClearHighlights();
@@ -90,20 +90,20 @@ public class HorseManMovementTwo : MonoBehaviour
 
         // Ýleri sað çapraz (2 birim)
         Vector3 backwardRightPos = currentPos -
-                                  (playerObject.transform.forward * 3f) +
-                                  (playerObject.transform.right * 3f);
+                                  (playerObject.transform.forward * 4f) +
+                                  (playerObject.transform.right * 4f);
         HighlightTileAtPosition(backwardRightPos);
 
         // Ýleri sol çapraz (2 birim)
         Vector3 backwardLeftPos = currentPos -
-                                 (playerObject.transform.forward * 3f) -
-                                 (playerObject.transform.right * 3f);
+                                 (playerObject.transform.forward * 4f) -
+                                 (playerObject.transform.right * 4f);
         HighlightTileAtPosition(backwardLeftPos);
     }
 
     void HighlightTileAtPosition(Vector3 position)
     {
-        Collider[] colliders = Physics.OverlapSphere(position, 3.35f);
+        Collider[] colliders = Physics.OverlapSphere(position, 5f);
         foreach (var collider in colliders)
         {
             if (collider.gameObject == currentHex)
