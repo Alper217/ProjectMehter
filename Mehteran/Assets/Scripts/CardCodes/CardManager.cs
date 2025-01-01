@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.ProBuilder.Shapes;
 
 public class CardManager : MonoBehaviour
 {
@@ -31,15 +33,36 @@ public class CardManager : MonoBehaviour
     public bool IsMyTurn { get; private set; } // Oyuncunun sırası olup olmadığını kontrol eder
     public GameManager gameManager; // GameManager referansı
     private int currentDrawCount = 0; // Oyuncunun bu turda çektiği kart sayısı
-    public MonoBehaviour[] cardScripts;
+
+    [Header("Scripts for Cards")]
+    public Type[] scriptTypes = new Type[] // Inspector üzerinden eklenebilir script'ler
+    {
+        typeof(ArcherMovementOne),
+        typeof(ArcherMovementTwo),
+        typeof(HorseManMovementOne),
+        typeof(HorseManMovementTwo),
+        typeof(InfantryMovementOne),
+        typeof(InfantryMovementTwo),
+        typeof(ShahMovement)
+    };
+
     private void Start()
     {
+
         CreateCardStack();
         Debug.Log($"{gameObject.name} için oyun başladı. Kart çekmek için karta tıklayın.");
     }
 
     private void CreateCardStack()
     {
+        // Script dağılımını kontrol etmek için bir sayaç listesi oluştur
+        Dictionary<Type, int> scriptCount = new Dictionary<Type, int>();
+        foreach (Type scriptType in scriptTypes)
+        {
+            scriptCount[scriptType] = 0; // Başlangıçta tüm script türleri için sayaç sıfır
+        }
+
+        System.Random random = new System.Random(); // Rastgele seçim yapmak için
         for (int i = 0; i < cardCount; i++)
         {
             float extraSpacing = (i / 3) * .5f;
@@ -54,6 +77,20 @@ public class CardManager : MonoBehaviour
 
             Card cardComponent = newCard.AddComponent<Card>();
             cardComponent.SetManager(this);
+
+            // Rastgele bir script türü seç ve karta ata
+            Type selectedScriptType = null;
+            while (selectedScriptType == null)
+            {
+                Type potentialType = scriptTypes[random.Next(scriptTypes.Length)];
+                if (scriptCount[potentialType] < 3)
+                {
+                    selectedScriptType = potentialType;
+                    scriptCount[potentialType]++;
+                }
+            }
+
+            newCard.AddComponent(selectedScriptType); // Seçilen scripti karta ekle
             cardStack.Push(newCard);
 
             BoxCollider collider = newCard.AddComponent<BoxCollider>();
