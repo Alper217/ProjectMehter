@@ -1,36 +1,50 @@
-using System.Collections;
-using Unity.VisualScripting;
+using System;
 using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
-    CardManager cardManagerOne;
-    public SecondPlayerCode secondPlayer;
+    public static TurnManager Instance { get; private set; } // Singleton Pattern
 
-    void Start()
+    [SerializeField]private CardManager currentPlayer;
+    [SerializeField]private CardManager opponentPlayer;
+
+    public CardManager CurrentPlayer => currentPlayer;
+
+    private void Awake()
     {
-        secondPlayer.enabled = false;
-        Debug.Log("Oyuna Hoþgeldiniz, Birinci oyuncu oyunu baþlatýcaktýr!");
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
     }
 
-    void Update()
+    public void InitializePlayers(CardManager player1, CardManager player2)
     {
-        //if (cardManagerOne.IsThrowed == true && cardManagerOne.IsAbondoned == true)
+        currentPlayer = player1;
+        opponentPlayer = player2;
+
+        // Ýlk sýrayý belirle
+        currentPlayer.StartPlayerTurn();
+        opponentPlayer.EndPlayerTurn();
+    }
+
+    public void EndTurn()
+    {
+        if (currentPlayer == null || opponentPlayer == null)
         {
-            //secondPlayer.
+            Debug.LogError("TurnManager: Oyuncular henüz atanmadý!");
+            return;
         }
-        //if (firstPlayer.isMoved)
-        //{
-        //    secondPlayer.enabled = true;
-        //    secondPlayer.isMoved = false;
-        //    firstPlayer.enabled = false;
-        //    firstPlayer.isMoved = false; 
-        //}
-        //else if (secondPlayer.isMoved)
-        //{
-        //    firstPlayer.enabled = true;
-        //    firstPlayer.isMoved = false;
-        //    secondPlayer.enabled = false;
-        //}
+
+        // Sýralarý deðiþtir
+        currentPlayer.EndPlayerTurn();
+        (currentPlayer, opponentPlayer) = (opponentPlayer, currentPlayer);
+        currentPlayer.StartPlayerTurn();
+
+        Debug.Log($"Sýra {currentPlayer.gameObject.name} oyuncusunda.");
     }
 }

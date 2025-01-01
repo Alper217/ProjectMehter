@@ -214,7 +214,10 @@ public class CardManager : MonoBehaviour
         {
             // Kartı elden kaldır ve temizle
             handCards.Remove(selectedCard);
-            Destroy(selectedCard); // Kartı yok et
+            if (selectedCard.CompareTag("FirstPlayerCard"))
+            {
+                Destroy(selectedCard); // Kartı yok et
+            }
             selectedCard = null; // Seçilen kartı sıfırla
             ArrangeHandCards(); // Eldeki kartları düzenle
             Debug.Log($"{gameObject.name}: Kart kullanıldı ve silindi.");
