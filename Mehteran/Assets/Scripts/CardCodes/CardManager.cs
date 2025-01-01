@@ -208,6 +208,26 @@ public class CardManager : MonoBehaviour
             handCards[i].transform.position = targetPosition;
         }
     }
+    public void UseCard()
+    {
+        if (IsMyTurn && selectedCard != null && handCards.Contains(selectedCard))
+        {
+            // Kartı elden kaldır ve temizle
+            handCards.Remove(selectedCard);
+            Destroy(selectedCard); // Kartı yok et
+            selectedCard = null; // Seçilen kartı sıfırla
+            ArrangeHandCards(); // Eldeki kartları düzenle
+            Debug.Log($"{gameObject.name}: Kart kullanıldı ve silindi.");
+        }
+        else if (!IsMyTurn)
+        {
+            Debug.Log($"{gameObject.name}: Sıra sende değil!");
+        }
+        else
+        {
+            Debug.Log($"{gameObject.name}: Kullanılacak bir kart seçilmedi veya elde değil!");
+        }
+    }
 
     public void StartPlayerTurn()
     {
