@@ -1,11 +1,13 @@
-// TurnManager.cs
+ï»¿// TurnManager.cs
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
-    public List<CardManager> players; // Oyuncuların listesi
-    private int currentPlayerIndex = 0; // Şu anki oyuncunun sırası
+    float roundIndex = 0;
+    public List<CardManager> players; // OyuncularÄ±n listesi
+    private int currentPlayerIndex = 0; // Åu anki oyuncunun sÄ±rasÄ±
 
     public int CurrentPlayerIndex { get; internal set; }
 
@@ -13,25 +15,37 @@ public class TurnManager : MonoBehaviour
     {
         if (players.Count > 0)
         {
-            StartTurn(); // İlk oyuncunun sırasını başlat
+            StartTurn(); // Ä°lk oyuncunun sÄ±rasÄ±nÄ± baÅŸlat
         }
         else
         {
-            Debug.LogError("TurnManager: Oyuncu listesi boş!");
+            Debug.LogError("TurnManager: Oyuncu listesi boÅŸ!");
         }
     }
 
     public void EndTurn()
     {
-        players[currentPlayerIndex].EndPlayerTurn(); // Aktif oyuncunun sırasını bitir
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.Count; // Sıradaki oyuncuya geç
-        StartTurn(); // Yeni oyuncunun sırasını başlat
+        roundIndex += 1;
+        players[currentPlayerIndex].EndPlayerTurn(); // Aktif oyuncunun sÄ±rasÄ±nÄ± bitir
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.Count; // SÄ±radaki oyuncuya geÃ§
+        StartTurn(); // Yeni oyuncunun sÄ±rasÄ±nÄ± baÅŸlat
+        Debug.Log(roundIndex);
+
+        // roundIndex 3 olduÄŸunda kart Ã§ekme iÅŸlemini durdur
+        if (roundIndex == 3)
+        {
+            foreach (var player in players)
+            {
+                player.StopDrawingCards(); // Kart Ã§ekme iÅŸlemini durdur
+            }
+            Debug.Log("Kart Ã§ekme iÅŸlemi durduruldu.");
+        }
     }
 
     private void StartTurn()
     {
         players[currentPlayerIndex].StartPlayerTurn();
-        Debug.Log($"Sıra Oyuncu {currentPlayerIndex + 1}'de!");
+        Debug.Log($"SÄ±ra Oyuncu {currentPlayerIndex + 1}'de!");
     }
 
     public CardManager GetCurrentPlayer()

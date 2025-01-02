@@ -47,6 +47,8 @@ public class CardManager : MonoBehaviour
         typeof(ShahMovement)
     };
 
+    private bool canDrawCards = true; // Kart çekme izni
+
     private void Start()
     {
         CreateCardStack();
@@ -105,7 +107,7 @@ public class CardManager : MonoBehaviour
 
     public void MoveCardToHand(GameObject card)
     {
-        if (IsMyTurn && cardStack.Contains(card) && currentDrawCount < drawLimit)
+        if (IsMyTurn && cardStack.Contains(card) && currentDrawCount < drawLimit && canDrawCards)
         {
             cardStack.Pop();
             handCards.Add(card);
@@ -121,10 +123,20 @@ public class CardManager : MonoBehaviour
         {
             Debug.Log($"{gameObject.name}: Sıra sende değil!");
         }
+        else if (!canDrawCards)
+        {
+            Debug.Log($"{gameObject.name}: Kart çekme işlemi durduruldu.");
+        }
         else
         {
             Debug.Log($"{gameObject.name}: Bu kart destede değil!");
         }
+    }
+
+    public void StopDrawingCards()
+    {
+        canDrawCards = false; // Kart çekmeyi durdur
+        Debug.Log($"{gameObject.name}: Kart çekme işlemi durduruldu.");
     }
 
     public void SelectCard(GameObject card)
@@ -212,9 +224,8 @@ public class CardManager : MonoBehaviour
     {
         if (IsMyTurn && selectedCard != null && handCards.Contains(selectedCard))
         {
-            // Kartı elden kaldır ve temizle
             handCards.Remove(selectedCard);
-            if (selectedCard.CompareTag("FirstPlayerCard"))
+            if (selectedCard.CompareTag("SecondPlayerCard"))
             {
                 Destroy(selectedCard); // Kartı yok et
             }
@@ -238,6 +249,7 @@ public class CardManager : MonoBehaviour
         IsMyTurn = true;
         hasGivenCardToOpponent = false;
         hasPlayedCardToTarget = false;
+        canDrawCards = true; // Yeni turda kart çekme izni ver
         Debug.Log($"{gameObject.name}: Sıra sende!");
     }
 
