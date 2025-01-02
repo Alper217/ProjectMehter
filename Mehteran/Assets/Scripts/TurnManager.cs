@@ -1,50 +1,41 @@
-using System;
+// TurnManager.cs
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
-    public static TurnManager Instance { get; private set; } // Singleton Pattern
+    public List<CardManager> players; // Oyuncularýn listesi
+    private int currentPlayerIndex = 0; // Þu anki oyuncunun sýrasý
 
-    [SerializeField]private CardManager currentPlayer;
-    [SerializeField]private CardManager opponentPlayer;
+    public int CurrentPlayerIndex { get; internal set; }
 
-    public CardManager CurrentPlayer => currentPlayer;
-
-    private void Awake()
+    public void StartGame()
     {
-        if (Instance != null && Instance != this)
+        if (players.Count > 0)
         {
-            Destroy(gameObject);
+            StartTurn(); // Ýlk oyuncunun sýrasýný baþlat
         }
         else
         {
-            Instance = this;
+            Debug.LogError("TurnManager: Oyuncu listesi boþ!");
         }
-    }
-
-    public void InitializePlayers(CardManager player1, CardManager player2)
-    {
-        currentPlayer = player1;
-        opponentPlayer = player2;
-
-        // Ýlk sýrayý belirle
-        currentPlayer.StartPlayerTurn();
-        opponentPlayer.EndPlayerTurn();
     }
 
     public void EndTurn()
     {
-        if (currentPlayer == null || opponentPlayer == null)
-        {
-            Debug.LogError("TurnManager: Oyuncular henüz atanmadý!");
-            return;
-        }
+        players[currentPlayerIndex].EndPlayerTurn(); // Aktif oyuncunun sýrasýný bitir
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.Count; // Sýradaki oyuncuya geç
+        StartTurn(); // Yeni oyuncunun sýrasýný baþlat
+    }
 
-        // Sýralarý deðiþtir
-        currentPlayer.EndPlayerTurn();
-        (currentPlayer, opponentPlayer) = (opponentPlayer, currentPlayer);
-        currentPlayer.StartPlayerTurn();
+    private void StartTurn()
+    {
+        players[currentPlayerIndex].StartPlayerTurn();
+        Debug.Log($"Sýra Oyuncu {currentPlayerIndex + 1}'de!");
+    }
 
-        Debug.Log($"Sýra {currentPlayer.gameObject.name} oyuncusunda.");
+    public CardManager GetCurrentPlayer()
+    {
+        return players[currentPlayerIndex];
     }
 }

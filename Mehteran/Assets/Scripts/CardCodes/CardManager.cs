@@ -1,4 +1,5 @@
-﻿using System;
+﻿// CardManager.cs
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.ProBuilder.Shapes;
@@ -31,7 +32,7 @@ public class CardManager : MonoBehaviour
     public bool IsThrowed = false;
 
     public bool IsMyTurn { get; private set; } // Oyuncunun sırası olup olmadığını kontrol eder
-    public GameManager gameManager; // GameManager referansı
+    public TurnManager turnManager; // TurnManager referansı
     private int currentDrawCount = 0; // Oyuncunun bu turda çektiği kart sayısı
 
     [Header("Scripts for Cards")]
@@ -48,7 +49,6 @@ public class CardManager : MonoBehaviour
 
     private void Start()
     {
-
         CreateCardStack();
         Debug.Log($"{gameObject.name} için oyun başladı. Kart çekmek için karta tıklayın.");
     }
@@ -97,7 +97,6 @@ public class CardManager : MonoBehaviour
             collider.size = new Vector3(1, 1, 1);
         }
     }
-
 
     public bool IsInHand(GameObject card)
     {
@@ -183,7 +182,7 @@ public class CardManager : MonoBehaviour
 
             if (hasGivenCardToOpponent)
             {
-                gameManager.EndTurn(); // Sıra geçişini bildir
+                turnManager.EndTurn(); // Sıra geçişini bildir
             }
         }
         else if (!IsMyTurn)
@@ -208,6 +207,7 @@ public class CardManager : MonoBehaviour
             handCards[i].transform.position = targetPosition;
         }
     }
+
     public void UseCard()
     {
         if (IsMyTurn && selectedCard != null && handCards.Contains(selectedCard))

@@ -3,24 +3,24 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public List<CardManager> players; // Oyuncular�n listesi.
-    private int currentPlayerIndex = 0; // �u anki oyuncunun s�ras�.
+    public List<CardManager> players; // Oyuncuların listesi.
+    private int currentPlayerIndex = 0; // Şu anki oyuncunun sırası.
 
     private void Start()
     {
-        StartTurn(); // �lk oyuncunun s�ras�n� ba�lat.
+        StartTurn(); // İlk oyuncunun sırasını başlat.
     }
 
     public void EndTurn()
     {
-        players[currentPlayerIndex].EndPlayerTurn(); // Aktif oyuncunun s�ras�n� bitir.
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.Count; // S�radaki oyuncuya ge�.
-        StartTurn(); // Yeni oyuncunun s�ras�n� ba�lat.
+        players[currentPlayerIndex].EndPlayerTurn(); // Aktif oyuncunun sırasını bitir.
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.Count; // Sıradaki oyuncuya geç.
+        StartTurn(); // Yeni oyuncunun sırasını başlat.
     }
 
     private void StartTurn()
     {
         players[currentPlayerIndex].StartPlayerTurn();
-        Debug.Log($"S�ra Oyuncu {currentPlayerIndex + 1}'de!");
+        Debug.Log($"Sıra Oyuncu {currentPlayerIndex + 1}'de!");
     }
 }
